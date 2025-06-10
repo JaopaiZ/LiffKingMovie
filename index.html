@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>สมัครเลย</title>
+  <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+</head>
+<body>
+  <h2>ระบบสมัครแพ็กเกจอัตโนมัติ</h2>
+  <p id="status">กำลังโหลด...</p>
+
+  <script>
+    const scriptUrl = "https://script.google.com/macros/s/AKfycby-K3MU-wU1fxeYWHpWWddNHaVj20SzqWMa5WmmLv8MfuTd83HtRyOiVHFYCPA8ol06/exec"; // เปลี่ยนตาม URL ของคุณ
+
+    async function sendUserId(userId) {
+      const payload = {
+        events: [
+          {
+            type: "message",
+            message: { type: "text", text: "สมัครเลย" },
+            replyToken: new Date().getTime().toString(),
+            source: { type: "user", userId: userId }
+          }
+        ]
+      };
+
+      try {
+        const res = await fetch(scriptUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const text = await res.text();
+        document.getElementById("status").innerText = "✅ สมัครสำเร็จ: " + text;
+      } catch (err) {
+        document.getElementById("status").innerText = "❌ เกิดข้อผิดพลาด: " + err;
+      }
+    }
+
+    async function main() {
+      try {
+        await liff.init({ liffId: "YOUR_LIFF_ID" }); // ใส่ LIFF ID ที่นี่
+        if (!liff.isLoggedIn()) {
+          liff.login();
+        } else {
+          const profile = await liff.getProfile();
+          sendUserId(profile.userId);
+        }
+      } catch (e) {
+        document.getElementById("status").innerText = "❗ ไม่สามารถเริ่มระบบได้: " + e;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
