@@ -24,6 +24,10 @@
         ]
       };
 
+     // ✅ เพิ่ม log ก่อนส่ง request
+      console.log("🔹 ส่งข้อมูลไปยัง:", scriptUrl);
+      console.log("🔹 Payload:", payload);
+
       try {
         const res = await fetch(scriptUrl, {
           method: "POST",
